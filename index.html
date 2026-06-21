@@ -112,6 +112,23 @@ cat > /mnt/user-data/outputs/sap_grc_interview.html << 'HTMLEOF'
   }
   .pill.green { border-color: #86efac; color: var(--accent); background: var(--accent-bg); }
 
+  .print-btn {
+    font-size: 12px;
+    font-weight: 700;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: transform .15s, background .15s;
+    white-space: nowrap;
+  }
+  .print-btn:hover {
+    background: var(--accent-mid);
+    transform: translateY(-1px);
+  }
+
   /* ── HERO ── */
   .hero {
     background: linear-gradient(160deg, #ffffff 0%, #f0f7f3 100%);
@@ -563,6 +580,33 @@ cat > /mnt/user-data/outputs/sap_grc_interview.html << 'HTMLEOF'
     footer { font-size: 11px; }
   }
 
+  @media print {
+    *, *::before, *::after { box-shadow: none !important; text-shadow: none !important; }
+    html, body { background: #fff !important; color: #000 !important; }
+    body { font-size: 12pt; line-height: 1.45; }
+    header, .search-wrap, .filter-bar, .print-btn, footer { display: none !important; }
+    .hero { background: none !important; border: none !important; padding: 0 !important; box-shadow: none !important; }
+    .hero-inner { margin: 0; }
+    .hero h1, .hero p, .hero-eyebrow { color: #000 !important; }
+    .section-header { border-color: #000 !important; }
+    .section-icon { background: transparent !important; color: #000 !important; }
+    .section-title, .section-count, .q-marker, .q-text, .q-chevron, .a-inner, .tip-box, .rc-table th, .rc-table td, .step-text, .step-num, .intro-name, .intro-role, .intro-body, .skill-tag, .step-text { color: #000 !important; }
+    .qa-card { background: #fff !important; border-color: #000 !important; box-shadow: none !important; }
+    .qa-question { cursor: default; }
+    .qa-answer { display: block !important; }
+    .qa-card.hidden { display: block !important; }
+    .a-inner { background: #fff !important; border-color: #000 !important; }
+    .a-inner code { background: #fff !important; border-color: #000 !important; color: #000 !important; }
+    .tip-box { background: #fff !important; border-color: #000 !important; color: #000 !important; }
+    .rc-table { border-collapse: collapse !important; }
+    .rc-table th, .rc-table td { border: 1px solid #000 !important; background: #fff !important; }
+    .steps, .step { color: #000 !important; }
+    .step-num { background: #fff !important; border-color: #000 !important; color: #000 !important; }
+    .skill-tags, .steps { page-break-inside: avoid; }
+    .qa-card { page-break-inside: avoid; }
+    @page { margin: 15mm; }
+  }
+
   @media (min-width: 481px) and (max-width: 768px) {
     .header-right .pill:nth-child(n+3) { display: none; }
     main { padding: 14px 18px 70px; }
@@ -582,6 +626,8 @@ cat > /mnt/user-data/outputs/sap_grc_interview.html << 'HTMLEOF'
     <span class="pill">EAM · ARM · BRM</span>
   </div>
 </header>
+
+<button class="print-btn" type="button" onclick="window.print()">Print Questions as PDF</button>
 
 <!-- HERO -->
 <section class="hero">
@@ -1362,6 +1408,14 @@ cat > /mnt/user-data/outputs/sap_grc_interview.html << 'HTMLEOF'
       const visible = sec.querySelectorAll('.qa-card:not(.hidden)');
       sec.style.display = visible.length === 0 ? 'none' : '';
     });
+  });
+
+  window.addEventListener('beforeprint', () => {
+    document.querySelectorAll('.qa-card').forEach(card => {
+      card.classList.remove('hidden');
+      card.classList.add('open');
+    });
+    document.querySelectorAll('.section').forEach(sec => sec.style.display = '');
   });
 </script>
 </body>
